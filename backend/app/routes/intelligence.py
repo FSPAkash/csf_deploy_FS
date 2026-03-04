@@ -9,10 +9,10 @@ from flask_jwt_extended import jwt_required, get_jwt
 from functools import wraps
 from datetime import datetime
 import traceback
+import json
+import os
 
 # Import services
-from ..services.intelligence.web_search import get_web_search_service
-from ..services.intelligence.nlp_extractor import get_nlp_extractor
 from ..services.intelligence.event_store import get_event_store
 from ..services.intelligence.trust_scorer import get_trust_scorer
 from ..services.prediction.time_series import get_time_series_model
@@ -21,6 +21,22 @@ from ..services.prediction.signal_fusion import get_signal_fusion
 from ..services.prediction.attribution import get_attribution_generator
 from ..services.alerts.alert_engine import get_alert_engine
 from ..services.alerts.alert_store import get_alert_store
+
+# Load static intelligence data for demo mode
+_STATIC_EVENTS = None
+def _load_static_events():
+    global _STATIC_EVENTS
+    if _STATIC_EVENTS is None:
+        data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data')
+        export_path = os.path.join(data_dir, 'intelligence_export.json')
+        try:
+            with open(export_path, 'r', encoding='utf-8') as f:
+                _STATIC_EVENTS = json.load(f)
+            print(f"[Intelligence] Loaded {len(_STATIC_EVENTS)} static events from intelligence_export.json")
+        except Exception as e:
+            print(f"[Intelligence] Failed to load intelligence_export.json: {e}")
+            _STATIC_EVENTS = []
+    return _STATIC_EVENTS
 
 bp = Blueprint('intelligence', __name__, url_prefix='/api/intelligence')
 
@@ -62,206 +78,46 @@ def beta2_required(fn):
 @beta2_required
 def search_intelligence():
     """
-    Search for competitive intelligence.
-
-    Body:
-    - competitors: List of competitor names to search
-    - include_regulatory: Boolean to include regulatory search
-    - include_industry: Boolean to include industry trends
-    - quick_mode: Skip NLP extraction for faster results (optional)
-
-    Returns:
-    - events: List of search results
-    - extraction_stats: Statistics about extraction
+    Demo mode: returns pre-loaded intelligence from intelligence_export.json.
+    No live web search or OpenAI calls are made.
     """
     try:
-        import time
-        start_time = time.time()
-
         data = request.get_json() or {}
-
         competitors = data.get('competitors', ['Carrier', 'Trane', 'Lennox'])
-        include_regulatory = data.get('include_regulatory', True)
-        include_industry = data.get('include_industry', True)
-        quick_mode = data.get('quick_mode', False)  # Skip NLP for faster results
 
-        print(f"[Intelligence Search] Starting search for {len(competitors)} competitors, quick_mode={quick_mode}")
+        all_events = _load_static_events()
 
-        # Get services
-        web_search = get_web_search_service()
-        nlp_extractor = get_nlp_extractor()
-        event_store = get_event_store()
-        trust_scorer = get_trust_scorer()
+        # Filter by requested competitors (case-insensitive)
+        comp_lower = {c.lower() for c in competitors}
+        filtered = [
+            e for e in all_events
+            if not e.get('company')
+            or str(e['company']).lower() == 'null'
+            or str(e['company']).lower() in comp_lower
+            or any(c in str(e.get('company', '')).lower() for c in comp_lower)
+        ]
 
-        # Check if NLP extractor has OpenAI configured
-        has_openai = nlp_extractor.client is not None
-        print(f"[Intelligence Search] OpenAI available: {has_openai}")
-
-        all_events = []
-        extraction_stats = {
-            'total_results_fetched': 0,
-            'total_events_extracted': 0,
-            'by_type': {}
-        }
-
-        # Fetch intelligence
-        fetch_start = time.time()
-        intelligence = web_search.fetch_all_intelligence(competitors)
-        print(f"[Intelligence Search] Fetch completed in {time.time() - fetch_start:.2f}s")
-
-        # Count total results
-        total_news = len(intelligence.get('competitor_news', []))
-        total_regulatory = len(intelligence.get('regulatory', []))
-        print(f"[Intelligence Search] Found {total_news} news items, {total_regulatory} regulatory items")
-
-        # Process competitor news
-        extract_start = time.time()
-
-        # Limit NLP extraction to avoid timeouts (max 10 NEW items with OpenAI per call)
-        max_nlp_items = 10 if has_openai and not quick_mode else 0
-        nlp_new = 0  # Only counts fresh OpenAI calls
-        nlp_cache_hits = 0
-
-        for result in intelligence.get('competitor_news', []):
-            extraction_stats['total_results_fetched'] += 1
-
-            # Check if this URL has cached NLP results (free, no OpenAI call)
-            is_cached = has_openai and not quick_mode and nlp_extractor.has_cached(result.url)
-
-            # Skip NLP extraction if in quick mode or budget exhausted (and not cached)
-            if quick_mode or not has_openai or (not is_cached and nlp_new >= max_nlp_items):
-                # Store as raw search result without NLP extraction
-                raw_event = {
-                    'id': f"raw_{hash(result.url) % 1000000:06d}",
-                    'event_id': f"raw_{hash(result.url) % 1000000:06d}",
-                    'event_type': 'competitor_news',
-                    'company': _extract_company_from_title(result.title),
-                    'headline': result.title,
-                    'description': result.snippet,
-                    'source_url': result.url,
-                    'source_name': result.source_name,
-                    'published_date': result.published_date,
-                    'trust_score': web_search.get_source_trust_score(result.url),
-                    'confidence': 'low',
-                    'is_raw_result': True
-                }
-                all_events.append(raw_event)
-                continue
-
-            # Extract events using NLP (from cache or fresh OpenAI call)
-            text = f"{result.title}\n\n{result.snippet}"
-            extraction = nlp_extractor.extract_from_text(
-                text=text,
-                source_url=result.url,
-                source_name=result.source_name
-            )
-
-            if is_cached:
-                nlp_cache_hits += 1
-            else:
-                nlp_new += 1
-
-            if extraction.success:
-                for event in extraction.events:
-                    # Calculate trust score
-                    event_dict = event.to_dict()
-                    event_dict['trust_score'] = web_search.get_source_trust_score(result.url)
-
-                    # Get full trust assessment
-                    assessment = trust_scorer.assess_trust(event_dict)
-                    event_dict['trust_score'] = assessment.final_score
-                    event_dict['trust_explanation'] = assessment.explanation
-
-                    # Store event
-                    event_store.store_event(event_dict)
-                    all_events.append(event_dict)
-
-                    # Update stats
-                    event_type = event.event_type
-                    extraction_stats['by_type'][event_type] = extraction_stats['by_type'].get(event_type, 0) + 1
-                    extraction_stats['total_events_extracted'] += 1
-
-        print(f"[Intelligence Search] Competitor news processed in {time.time() - extract_start:.2f}s (NLP new: {nlp_new}, cached: {nlp_cache_hits})")
-
-        # Process regulatory if requested
-        if include_regulatory:
-            reg_start = time.time()
-            for result in intelligence.get('regulatory', []):
-                extraction_stats['total_results_fetched'] += 1
-
-                is_cached = has_openai and not quick_mode and nlp_extractor.has_cached(result.url)
-
-                # Skip NLP for regulatory in quick mode or if budget exhausted (and not cached)
-                if quick_mode or not has_openai or (not is_cached and nlp_new >= max_nlp_items):
-                    raw_event = {
-                        'id': f"raw_{hash(result.url) % 1000000:06d}",
-                        'event_id': f"raw_{hash(result.url) % 1000000:06d}",
-                        'event_type': 'regulatory_change',
-                        'company': None,
-                        'headline': result.title,
-                        'description': result.snippet,
-                        'source_url': result.url,
-                        'source_name': result.source_name,
-                        'published_date': result.published_date,
-                        'trust_score': web_search.get_source_trust_score(result.url),
-                        'confidence': 'low',
-                        'is_raw_result': True
-                    }
-                    all_events.append(raw_event)
-                    continue
-
-                text = f"{result.title}\n\n{result.snippet}"
-                extraction = nlp_extractor.extract_from_text(
-                    text=text,
-                    source_url=result.url,
-                    source_name=result.source_name
-                )
-
-                if is_cached:
-                    nlp_cache_hits += 1
-                else:
-                    nlp_new += 1
-
-                if extraction.success:
-                    for event in extraction.events:
-                        event_dict = event.to_dict()
-                        event_dict['trust_score'] = web_search.get_source_trust_score(result.url)
-
-                        assessment = trust_scorer.assess_trust(event_dict)
-                        event_dict['trust_score'] = assessment.final_score
-
-                        event_store.store_event(event_dict)
-                        all_events.append(event_dict)
-
-                        event_type = event.event_type
-                        extraction_stats['by_type'][event_type] = extraction_stats['by_type'].get(event_type, 0) + 1
-                        extraction_stats['total_events_extracted'] += 1
-
-            print(f"[Intelligence Search] Regulatory processed in {time.time() - reg_start:.2f}s")
-
-        # Generate alerts for new events
-        alert_engine = get_alert_engine()
-        alert_store = get_alert_store()
-
-        alerts = alert_engine.check_event_alerts(all_events)
-        alerts.extend(alert_engine.check_regulatory_alerts(all_events))
-
-        for alert in alerts:
-            alert_store.save_alert(alert)
-
-        total_time = time.time() - start_time
-        print(f"[Intelligence Search] Complete! Total time: {total_time:.2f}s, Events: {len(all_events)}, NLP new: {nlp_new}, cached: {nlp_cache_hits}")
+        # Build stats
+        by_type = {}
+        for e in filtered:
+            et = e.get('event_type', 'unknown')
+            by_type[et] = by_type.get(et, 0) + 1
 
         return jsonify({
             'success': True,
-            'events': all_events,
-            'extraction_stats': extraction_stats,
-            'alerts_generated': len(alerts),
-            'processing_time_seconds': round(total_time, 2),
-            'openai_available': has_openai,
-            'nlp_items_processed': nlp_new + nlp_cache_hits,
-            'nlp_new_extractions': nlp_new,
-            'nlp_cache_hits': nlp_cache_hits
+            'events': filtered,
+            'extraction_stats': {
+                'total_results_fetched': len(filtered),
+                'total_events_extracted': len(filtered),
+                'by_type': by_type
+            },
+            'alerts_generated': 0,
+            'processing_time_seconds': 0.0,
+            'openai_available': False,
+            'nlp_items_processed': 0,
+            'nlp_new_extractions': 0,
+            'nlp_cache_hits': 0,
+            'demo_mode': True
         })
 
     except Exception as e:
@@ -276,39 +132,36 @@ def search_intelligence():
 @beta2_required
 def get_events():
     """
-    Get intelligence events with filtering.
-
-    Query params:
-    - event_type: Filter by event type
-    - company: Filter by company name
-    - product: Filter by affected product
-    - min_trust: Minimum trust score (0-1)
-    - since: ISO datetime - only events after this
-    - limit: Maximum results (default 50)
+    Demo mode: returns pre-loaded events from intelligence_export.json
+    with optional filtering.
     """
     try:
         event_type = request.args.get('event_type')
         company = request.args.get('company')
         product = request.args.get('product')
         min_trust = float(request.args.get('min_trust', 0))
-        since = request.args.get('since')
         limit = int(request.args.get('limit', 50))
 
-        event_store = get_event_store()
+        all_events = _load_static_events()
 
-        events = event_store.get_events(
-            event_type=event_type,
-            company=company,
-            product=product,
-            min_trust=min_trust,
-            since=since,
-            limit=limit
-        )
+        filtered = []
+        for e in all_events:
+            if event_type and e.get('event_type') != event_type:
+                continue
+            if company and company.lower() not in str(e.get('company', '')).lower():
+                continue
+            if product and product not in (e.get('products_affected') or []):
+                continue
+            if (e.get('trust_score') or 0) < min_trust:
+                continue
+            filtered.append(e)
+            if len(filtered) >= limit:
+                break
 
         return jsonify({
             'success': True,
-            'events': events,
-            'count': len(events)
+            'events': filtered,
+            'count': len(filtered)
         })
 
     except Exception as e:
@@ -322,23 +175,16 @@ def get_events():
 @bp.route('/events/<event_id>', methods=['GET'])
 @beta2_required
 def get_event(event_id):
-    """Get a single event by ID."""
+    """Get a single event by ID from static data."""
     try:
-        event_store = get_event_store()
-        event = event_store.get_event_by_id(event_id)
+        all_events = _load_static_events()
+        event = next((e for e in all_events if e.get('id') == event_id), None)
 
         if not event:
             return jsonify({
                 'success': False,
                 'error': 'Event not found'
             }), 404
-
-        # Get full trust assessment
-        trust_scorer = get_trust_scorer()
-        all_events = event_store.get_events(limit=50)
-        assessment = trust_scorer.assess_trust(event, all_events)
-
-        event['trust_details'] = trust_scorer.explain_score(assessment)
 
         return jsonify({
             'success': True,

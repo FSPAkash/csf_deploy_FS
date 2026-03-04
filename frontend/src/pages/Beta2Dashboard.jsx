@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useSpring, useTransform } from 'framer-motion';
 import { createPortal } from 'react-dom';
 import {
-  ArrowLeft, Download, TrendingUp, TrendingDown,
+  Download, TrendingUp, TrendingDown,
   ChevronDown, ChevronRight, Activity, Zap, Target, Layers,
   BarChart3, AlertTriangle, Clock,
   RefreshCw, Brain, Check, X,
@@ -405,7 +405,7 @@ function GaugeMeter({ value, max, label, color = 'cyan', size = 'md' }) {
 // HEADER
 // ============================================
 
-function ConsoleHeader({ user, onLogout, onBack, onExport, canExport, selectedProduct, selectedAps, selectedYear, products, apsClasses, availableYears, setSelectedProduct, setSelectedAps, setSelectedYear, status, lastUpdated, betaLoading, cannibalizationActive = false, onFeedback }) {
+function ConsoleHeader({ user, onLogout, onExport, canExport, selectedProduct, selectedAps, selectedYear, products, apsClasses, availableYears, setSelectedProduct, setSelectedAps, setSelectedYear, status, lastUpdated, betaLoading, cannibalizationActive = false, onFeedback }) {
   return (
     <motion.header
       initial={{ y: -20, opacity: 0 }}
@@ -447,18 +447,9 @@ function ConsoleHeader({ user, onLogout, onBack, onExport, canExport, selectedPr
         ))}
       </div>
 
-      {/* Left: Logo & Back */}
+      {/* Left: Logo */}
       <div className="flex items-center gap-3">
-        <motion.button
-          onClick={onBack}
-          whileHover={{ x: -2 }}
-          whileTap={{ scale: 0.97 }}
-          className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-surface-400 hover:text-daikin-blue hover:bg-white/70 transition-all"
-        >
-          <ArrowLeft className="w-4 h-4" />
-        </motion.button>
-
-        <div className="flex items-center gap-2.5 pl-2 border-l border-surface-200">
+        <div className="flex items-center gap-2.5">
           <img src="/FSSML.png" alt="Manufacturer" className="h-9 w-auto" />
           <div className="flex flex-col">
             <span className="text-sm font-extrabold text-daikin-dark tracking-tight leading-none">FORECAST</span>
@@ -2622,7 +2613,7 @@ function Beta2DashboardInner() {
         <ConsoleHeader
           user={user}
           onLogout={logout}
-          onBack={() => navigate('/')}
+
           onExport={handleExport}
           canExport={!!simulationResult}
           selectedProduct={selectedProduct}

@@ -40,7 +40,7 @@ function ProtectedRoute({ children, adminOnly = false, betaOnly = false }) {
 }
 
 function App() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isBeta, isLoading } = useAuth();
 
   if (isLoading) {
     return (
@@ -61,7 +61,7 @@ function App() {
           <Route
             path="/login"
             element={
-              isAuthenticated ? <Navigate to="/" replace /> : <Login />
+              isAuthenticated ? <Navigate to={isBeta ? "/beta2" : "/"} replace /> : <Login />
             }
           />
 

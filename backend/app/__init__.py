@@ -22,7 +22,7 @@ def create_app(config_class=Config):
     # Get the path to frontend dist folder
     frontend_folder = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'frontend', 'dist')
     
-    app = Flask(__name__, static_folder=frontend_folder, static_url_path='')
+    app = Flask(__name__, static_folder=frontend_folder)
     app.config.from_object(config_class)
     
     # Initialize extensions

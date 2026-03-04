@@ -260,7 +260,7 @@ function Login() {
           transition={{ delay: 0.35, duration: 0.4 }}
           className="mt-4 text-[10px] text-surface-400"
         >
-          version alpha 12/12/2025
+          deployed 03/04/2026
         </motion.p>
       </div>
     </div>

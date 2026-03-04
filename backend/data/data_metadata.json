@@ -1,0 +1,93 @@
+{
+  "analysis_month": 5,
+  "analysis_year": 2026,
+  "baseline_data_date": "2026-02-09",
+  "baseline_updated_at": "2026-02-09T10:29:35.625944",
+  "baseline_filename": "02_09_26_Product_Data.xlsx",
+  "products": {
+    "AH": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.625958"
+    },
+    "CN": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.625964"
+    },
+    "FN": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.625969"
+    },
+    "HP": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.625971"
+    },
+    "ACNF": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.625974"
+    },
+    "AH FIT": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.625976"
+    },
+    "AH R": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.625979"
+    },
+    "AHKD 3PH": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.625981"
+    },
+    "AWUF": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.625983"
+    },
+    "CN 1PH": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.625985"
+    },
+    "CN 3PH": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.625987"
+    },
+    "CN FIT": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.625990"
+    },
+    "CN L 3PH": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.625992"
+    },
+    "FN 80 MULTI SPEED": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.625994"
+    },
+    "FN 80 VAR SPEED": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.625996"
+    },
+    "FN 90 MULTI SPEED": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.625998"
+    },
+    "FN 90 VAR SPEED": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.626001"
+    },
+    "HP 1PH": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.626003"
+    },
+    "HP 3PH": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.626005"
+    },
+    "HP FIT": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.626007"
+    },
+    "HP L 3PH": {
+      "baseline_data_date": "2026-02-09",
+      "updated_at": "2026-02-09T10:29:35.626009"
+    }
+  }
+}

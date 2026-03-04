@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Intelligence | Manufacturer Forecast Simulator</title>
+    <link rel="icon" type="image/png" href="FSSML.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #fff;
+            color: #1d1d1f;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .page {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2.5rem 3rem 1.5rem;
+        }
+
+        /* Header */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .brand img { height: 28px; }
+
+        .brand span {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #86868b;
+        }
+
+        /* Title */
+        .title {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            color: #1d1d1f;
+            margin-bottom: 0.5rem;
+            animation: slideUp 0.5s ease-out both;
+            animation-delay: 0.1s;
+        }
+
+        .intro {
+            font-size: 1.05rem;
+            font-weight: 400;
+            color: #6e6e73;
+            line-height: 1.45;
+            max-width: 640px;
+            margin-bottom: 2.5rem;
+            animation: slideUp 0.5s ease-out both;
+            animation-delay: 0.2s;
+        }
+
+        /* Flow */
+        .flow {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 0;
+            margin-bottom: 2.5rem;
+            position: relative;
+            animation: fadeIn 0.6s ease-out both;
+            animation-delay: 0.3s;
+        }
+
+        .flow::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 60px;
+            right: 60px;
+            height: 2px;
+            background: linear-gradient(to right, #00A0E4, #44C8F5);
+            border-radius: 1px;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+        }
+
+        .step .dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #00A0E4;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #fff;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 2px 8px rgba(0, 160, 228, 0.3);
+        }
+
+        .step h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 0.4rem;
+        }
+
+        .step p {
+            font-size: 0.78rem;
+            color: #86868b;
+            line-height: 1.45;
+            padding: 0 0.5rem;
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: #e8e8ed;
+            margin-bottom: 1.75rem;
+        }
+
+        /* Details */
+        .details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            animation: slideUp 0.5s ease-out both;
+            animation-delay: 0.45s;
+        }
+
+        .detail h4 {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #00A0E4;
+            margin-bottom: 0.75rem;
+        }
+
+        .detail li {
+            list-style: none;
+            font-size: 0.85rem;
+            color: #1d1d1f;
+            padding: 0.3rem 0;
+            border-bottom: 1px solid #f5f5f7;
+        }
+
+        .detail li:last-child { border-bottom: none; }
+
+        /* Footer */
+        .footer {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e8e8ed;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: #aeaeb2;
+        }
+
+        /* Airflow dots */
+        .brand {
+            position: relative;
+            overflow: visible;
+        }
+
+        .airflow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .airflow .dot-particle {
+            position: absolute;
+            border-radius: 50%;
+            background: #00A0E4;
+            animation: airflow var(--dur) var(--delay) ease-out infinite;
+        }
+
+        @keyframes airflow {
+            0%   { transform: translate(0, 0) scale(0.6); opacity: 0.12; }
+            30%  { transform: translate(var(--dx1), var(--dy1)) scale(1); opacity: 0.7; }
+            65%  { transform: translate(var(--dx2), var(--dy2)) scale(0.9); opacity: 0.5; }
+            100% { transform: translate(var(--dx3), 0) scale(0.4); opacity: 0; }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            0% { opacity: 0; transform: translateY(12px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @media print {
+            .page { padding: 1.5rem; }
+            .brand, .title, .intro, .flow, .details { animation: none !important; }
+            .airflow { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="brand">
+            <div class="airflow">
+                <div class="dot-particle" style="left:100px;top:20%;width:4px;height:4px;--dur:3.5s;--delay:0s;--dx1:100px;--dy1:-16px;--dx2:250px;--dy2:-8px;--dx3:420px"></div>
+                <div class="dot-particle" style="left:100px;top:48%;width:3px;height:3px;--dur:4s;--delay:0.28s;--dx1:118px;--dy1:16px;--dx2:272px;--dy2:8px;--dx3:438px"></div>
+                <div class="dot-particle" style="left:100px;top:62%;width:3px;height:3px;--dur:4.5s;--delay:0.56s;--dx1:136px;--dy1:-8px;--dx2:294px;--dy2:-4px;--dx3:456px"></div>
+                <div class="dot-particle" style="left:100px;top:34%;width:4px;height:4px;--dur:3.5s;--delay:0.84s;--dx1:154px;--dy1:8px;--dx2:316px;--dy2:4px;--dx3:474px"></div>
+                <div class="dot-particle" style="left:100px;top:22%;width:3px;height:3px;--dur:4s;--delay:1.12s;--dx1:172px;--dy1:-16px;--dx2:338px;--dy2:-8px;--dx3:492px"></div>
+                <div class="dot-particle" style="left:100px;top:55%;width:2px;height:2px;--dur:4.5s;--delay:1.4s;--dx1:190px;--dy1:16px;--dx2:360px;--dy2:8px;--dx3:510px"></div>
+                <div class="dot-particle" style="left:100px;top:68%;width:4px;height:4px;--dur:3.5s;--delay:1.68s;--dx1:208px;--dy1:-8px;--dx2:382px;--dy2:-4px;--dx3:528px"></div>
+                <div class="dot-particle" style="left:100px;top:40%;width:3px;height:3px;--dur:4s;--delay:1.96s;--dx1:226px;--dy1:8px;--dx2:404px;--dy2:4px;--dx3:546px"></div>
+                <div class="dot-particle" style="left:100px;top:28%;width:3px;height:3px;--dur:4.5s;--delay:2.24s;--dx1:244px;--dy1:-16px;--dx2:426px;--dy2:-8px;--dx3:564px"></div>
+                <div class="dot-particle" style="left:100px;top:50%;width:2px;height:2px;--dur:3.5s;--delay:2.52s;--dx1:262px;--dy1:16px;--dx2:448px;--dy2:8px;--dx3:582px"></div>
+                <div class="dot-particle" style="left:100px;top:60%;width:4px;height:4px;--dur:4s;--delay:2.8s;--dx1:280px;--dy1:-8px;--dx2:470px;--dy2:-4px;--dx3:600px"></div>
+                <div class="dot-particle" style="left:100px;top:36%;width:3px;height:3px;--dur:4.5s;--delay:3.08s;--dx1:298px;--dy1:8px;--dx2:492px;--dy2:4px;--dx3:618px"></div>
+            </div>
+            <img src="FS.png" alt="Manufacturer">
+            <span>Forecast Simulator</span>
+        </div>
+
+        <h1 class="title">Market Intelligence</h1>
+        <p class="intro">
+            The system scans the competitive landscape, extracts structured intelligence from unstructured news, scores each finding for reliability, and feeds it into the forecast.
+        </p>
+
+        <div class="flow">
+            <div class="step">
+                <div class="dot">1</div>
+                <h3>Scan</h3>
+                <p>Automated search across 40+ trusted sources for competitor activity, regulatory changes, and industry trends across 16 HVAC competitors.</p>
+            </div>
+            <div class="step">
+                <div class="dot">2</div>
+                <h3>Extract</h3>
+                <p>A language model pulls out event type, company, products affected, impact direction, and a supporting quote from each article.</p>
+            </div>
+            <div class="step">
+                <div class="dot">3</div>
+                <h3>Score</h3>
+                <p>Every event gets a trust score from four factors: source reputation, extraction confidence, corroboration, and recency.</p>
+            </div>
+            <div class="step">
+                <div class="dot">4</div>
+                <h3>Quantify</h3>
+                <p>Trusted events are converted into projected market share impact using stated figures, historical analogues, or reference benchmarks.</p>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="details">
+            <div class="detail">
+                <h4>Event Types Tracked</h4>
+                <ul>
+                    <li>Product launches</li>
+                    <li>Pricing changes</li>
+                    <li>Supply disruptions</li>
+                    <li>Regulatory changes</li>
+                    <li>Capacity expansions</li>
+                    <li>Market entries and exits</li>
+                </ul>
+            </div>
+            <div class="detail">
+                <h4>Trust Tiers</h4>
+                <ul>
+                    <li>Official Source (85% +)</li>
+                    <li>Verified Source (70% +)</li>
+                    <li>News Source (55% +)</li>
+                    <li>Unverified (40% +)</li>
+                    <li>Low Confidence (&lt;40%)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <span>Manufacturer Forecast Simulator</span>
+            <span>Confidential</span>
+        </div>
+    </div>
+</body>
+</html>

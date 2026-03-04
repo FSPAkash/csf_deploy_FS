@@ -1,0 +1,164 @@
+@import './variables.css';
+@import './glassmorphism.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    rgba(68, 200, 245, 0.08) 25%,
+    rgba(0, 160, 228, 0.1) 50%,
+    rgba(68, 200, 245, 0.08) 75%,
+    #ffffff 100%
+  );
+  background-attachment: fixed;
+  color: var(--color-daikin-dark);
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Typography utilities */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Selection */
+::selection {
+  background: rgba(0, 160, 228, 0.2);
+  color: var(--color-daikin-dark);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 160, 228, 0.05);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 160, 228, 0.3);
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 160, 228, 0.5);
+}
+
+/* Focus visible */
+:focus-visible {
+  outline: 2px solid var(--color-daikin-blue);
+  outline-offset: 2px;
+}
+
+/* Custom utilities */
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, var(--color-daikin-blue), var(--color-daikin-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .border-gradient {
+    border: 1px solid transparent;
+    background: 
+      linear-gradient(white, white) padding-box,
+      linear-gradient(135deg, var(--color-daikin-blue), var(--color-daikin-light)) border-box;
+  }
+  
+  .animate-in {
+    animation: fadeIn 0.3s ease-out, slideUp 0.3s ease-out;
+  }
+}
+
+/* Number input - hide spinners */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Range input styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-track {
+  height: 6px;
+  background: rgba(0, 160, 228, 0.2);
+  border-radius: 3px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border: 2px solid var(--color-daikin-blue);
+  border-radius: 50%;
+  margin-top: 2px;
+  box-shadow: 0 2px 8px rgba(0, 160, 228, 0.3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(235, 8, 8, 0.4);
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(0.95);
+}
+
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  background: rgba(0, 160, 228, 0.2);
+  border-radius: 3px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: white;
+  border: 2px solid var(--color-daikin-blue);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 160, 228, 0.3);
+}
+

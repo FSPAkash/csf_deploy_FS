@@ -28,8 +28,8 @@ USERS_DB = {
         "is_admin": False,
         "is_beta": False
     },
-        "Manufacturer_Team": {
-        "password_hash": hashlib.sha256("Abc@12345".encode()).hexdigest(),
+        "Sagar": {
+        "password_hash": hashlib.sha256("s2025".encode()).hexdigest(),
         "is_admin": False,
         "is_beta": False
     },

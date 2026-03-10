@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -n \"daikin\\\\|Daikin\" c:/Users/AkashPatil/daikin-forecast-simulator/render_deploy/frontend/src/styles/*.css)"
+    ]
+  }
+}

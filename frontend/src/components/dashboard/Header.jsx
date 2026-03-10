@@ -1,53 +1,14 @@
 import { LogOut, Settings, GraduationCap, FlaskConical, Zap } from 'lucide-react';
-import { motion } from 'framer-motion';
+
 import { Button, Badge } from '../common';
 
 function Header({ user, isAdmin, isBeta, onLogout, onDevMode, onBetaDashboard, onBeta2Dashboard, onStartTutorial }) {
   return (
     <header className="sticky top-0 z-[var(--z-sticky)] border-b border-surface-200/50 bg-white/70 backdrop-blur-md">
-      {/* Airflow Dots */}
-      <div className="absolute inset-0 overflow-hidden">
-        {[...Array(12)].map((_, i) => (
-          <motion.div
-            key={`dot-${i}`}
-            className="absolute rounded-full bg-daikin-blue"
-            style={{
-              left: 65,
-              top: `${30 + (i % 4) * 12}%`,
-              width: 4 - (i % 3),
-              height: 4 - (i % 3),
-            }}
-            animate={{
-              x: [0, 80 + i * 15, 200 + i * 20, 350 + i * 15],
-              y: [
-                0,
-                (i % 4 === 0 ? -18 : i % 4 === 1 ? 18 : i % 4 === 2 ? -10 : 10),
-                (i % 4 === 0 ? -10 : i % 4 === 1 ? 10 : i % 4 === 2 ? -5 : 5),
-                0,
-              ],
-              opacity: [0.2, 1, 0.9, 0],
-              scale: [0.7, 1, 1, 0.5],
-            }}
-            transition={{
-              duration: 3 + (i % 4) * 0.4,
-              delay: i * 0.25,
-              repeat: Infinity,
-              ease: 'easeOut',
-            }}
-          />
-        ))}
-      </div>
-
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
           <div className="flex items-center gap-3" data-tutorial="header">
-            <img
-              src="/FS.png"
-              alt="Manufacturer Logo"
-              className="h-10 w-auto object-contain"
-            />
-
+            <span className="text-sm font-extrabold text-daikin-dark tracking-tight">SCENARIO SIMULATOR</span>
           </div>
 
           {/* User Info and Actions */}

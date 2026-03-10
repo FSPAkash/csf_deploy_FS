@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, Trash2 } from 'lucide-react';
+import { X, Send, Trash2, Zap } from 'lucide-react';
 import { useChat } from '../../contexts/ChatContext';
 import { useForecast } from '../../contexts/ForecastContext';
 import ChatMessage from './ChatMessage';
@@ -175,7 +175,7 @@ function ChatBot({ onAction }) {
                   className="w-8 h-8 rounded-lg flex items-center justify-center bg-white relative overflow-hidden"
                   style={{ boxShadow: '0 0 12px 2px rgba(141, 183, 79, 0.4)' }}
                 >
-                  <img src="/FSSML.png" alt="Assistant" className="w-6 h-6 object-contain" />
+                  <Zap className="w-4 h-4 text-daikin-blue" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-sm text-daikin-dark">Forecast Assistant</h3>

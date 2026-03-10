@@ -35,16 +35,6 @@ function Login() {
 
   const displayError = localError || error;
 
-  // Generate particles for airflow
-  const particles = Array.from({ length: 30 }, (_, i) => ({
-    id: i,
-    y: -50 + (i % 10) * 12,
-    delay: i * 0.08,
-    duration: 3 + (i % 4) * 0.5,
-    size: 3 + (i % 3),
-    opacity: 0.3 + (Math.random() * 0.4),
-  }));
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 overflow-hidden">
       {/* Background gradient */}
@@ -53,66 +43,16 @@ function Login() {
       {/* Main Content Container */}
       <div className="relative z-10 flex flex-col items-center">
         
-        {/* Logo with Airflow Animation */}
+        {/* Title */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-          className="relative mb-6"
+          className="mb-6 text-center"
         >
-          {/* Airflow Container - Full Width */}
-          <div className="relative w-[500px] h-[80px] flex items-center justify-center">
-            
-            {/* Particles flowing through */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              {particles.map((particle) => (
-                <motion.div
-                  key={`particle-${particle.id}`}
-                  className="absolute rounded-full bg-daikin-blue"
-                  style={{
-                    top: `calc(50% + ${particle.y}px)`,
-                    left: -20,
-                    width: particle.size,
-                    height: particle.size,
-                    opacity: particle.opacity,
-                  }}
-                  animate={{
-                    x: [0, 520],
-                    y: [0, (particle.id % 2 === 0 ? -6 : 6), 0],
-                    opacity: [0, particle.opacity, particle.opacity, 0],
-                    scale: [0.5, 1, 1, 0.5],
-                  }}
-                  transition={{
-                    duration: particle.duration,
-                    delay: particle.delay,
-                    repeat: Infinity,
-                    ease: 'linear',
-                  }}
-                />
-              ))}
-            </div>
-
-            {/* Logo - Semi-transparent so dots pass through */}
-            <div className="relative z-10">
-              <img 
-                src="/FS.png"
-                alt="Manufacturer Logo" 
-                className="h-14 w-auto object-contain opacity-90"
-              />
-            </div>
-          </div>
-
-          {/* Title */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15, duration: 0.3 }}
-            className="text-center mt-3"
-          >
-            <h1 className="text-lg font-semibold text-daikin-dark">
-              Baseline Forecast Simulator
-            </h1>
-          </motion.div>
+          <h1 className="text-lg font-semibold text-daikin-dark">
+            Scenario Simulator
+          </h1>
         </motion.div>
 
         {/* Login Card */}
@@ -232,25 +172,6 @@ function Login() {
               </Button>
             </form>
           </GlassCard>
-        </motion.div>
-
-        {/* Powered By Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25, duration: 0.4 }}
-          className="mt-6 flex flex-col items-center"
-        >
-          <span className="text-[10px] uppercase tracking-wider text-surface-400 mb-2">
-            Powered by
-          </span>
-          <div className="flex items-center gap-4">
-            <img 
-              src="/FS.png" 
-              alt="FS Logo" 
-              className="h-6 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity"
-            />
-          </div>
         </motion.div>
 
         {/* Version Footer */}

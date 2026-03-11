@@ -113,11 +113,10 @@ function ChatBot({ onAction }) {
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 260, damping: 20 }}
       >
-        <img
-          src="/FSSML.png"
-          alt="Chat Assistant"
-          className="w-10 h-10 object-contain"
-        />
+        <svg className="w-10 h-10" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100" height="100" rx="20" fill="#4f46e5"/>
+          <text x="50" y="72" fontSize="60" textAnchor="middle" fill="white" fontFamily="sans-serif" fontWeight="bold">SS</text>
+        </svg>
 
         {/* Unread indicator */}
         {hasUnread && (

@@ -30,6 +30,7 @@ import { formatNumber } from '../utils/formatters';
 import betaApi from '../services/betaApi';
 import Select from '../components/common/Select';
 import { Modal } from '../components/common';
+import { BrandHeaderLockup } from '../components/branding/Branding';
 
 // ============================================
 // CONSTANTS
@@ -449,12 +450,7 @@ function ConsoleHeader({ user, onLogout, onExport, canExport, selectedProduct, s
 
       {/* Left: Logo */}
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2.5">
-          <div className="flex flex-col">
-            <span className="text-sm font-extrabold text-daikin-dark tracking-tight leading-none">SCENARIO</span>
-            <span className="text-[9px] font-semibold text-surface-400 tracking-[0.2em] leading-none mt-0.5">SIMULATOR</span>
-          </div>
-        </div>
+        <BrandHeaderLockup />
       </div>
 
       {/* Center: Context Selectors */}

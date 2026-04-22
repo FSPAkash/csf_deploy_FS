@@ -2,11 +2,14 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { User, Lock } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useBranding } from '../contexts/BrandingContext';
 import { GlassCard, Button, Alert } from '../components/common';
+import { BrandLoginLockup } from '../components/branding/Branding';
 import clsx from 'clsx';
 
 function Login() {
   const { login, isLoading, error, clearError } = useAuth();
+  const { showLogo, setShowLogo } = useBranding();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [localError, setLocalError] = useState(null);
@@ -50,9 +53,7 @@ function Login() {
           transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
           className="mb-6 text-center"
         >
-          <h1 className="text-lg font-semibold text-daikin-dark">
-            Scenario Simulator
-          </h1>
+          <BrandLoginLockup />
         </motion.div>
 
         {/* Login Card */}
@@ -175,14 +176,45 @@ function Login() {
         </motion.div>
 
         {/* Version Footer */}
-        <motion.p
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.35, duration: 0.4 }}
-          className="mt-4 text-[10px] text-surface-400"
+          transition={{ delay: 0.3, duration: 0.4 }}
+          className="mt-4"
         >
-          deployed 03/04/2026
-        </motion.p>
+          <div className="flex flex-col items-center gap-3">
+            <div className="inline-flex items-center rounded-full bg-white/80 p-1 border border-white/70 shadow-[0_10px_24px_rgba(15,23,42,0.08)] backdrop-blur-xl">
+              <button
+                type="button"
+                onClick={() => setShowLogo(true)}
+                className={clsx(
+                  'px-4 py-1.5 rounded-full text-[11px] font-semibold transition-all duration-200',
+                  showLogo
+                    ? 'bg-daikin-blue text-white shadow-[0_8px_18px_rgba(0,160,228,0.28)]'
+                    : 'text-surface-500 hover:text-daikin-dark'
+                )}
+              >
+                Branded
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowLogo(false)}
+                className={clsx(
+                  'px-4 py-1.5 rounded-full text-[11px] font-semibold transition-all duration-200',
+                  !showLogo
+                    ? 'bg-slate-800 text-white shadow-[0_8px_18px_rgba(15,23,42,0.18)]'
+                    : 'text-surface-500 hover:text-daikin-dark'
+                )}
+              >
+                Unbranded
+              </button>
+            </div>
+
+            <span className="text-[10px] text-surface-400">
+              deployed 03/04/2026
+            </span>
+          </div>
+        </motion.div>
       </div>
     </div>
   );

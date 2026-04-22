@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, Trash2, Zap } from 'lucide-react';
+import { X, Send, Trash2 } from 'lucide-react';
 import { useChat } from '../../contexts/ChatContext';
 import { useForecast } from '../../contexts/ForecastContext';
 import ChatMessage from './ChatMessage';
+import { BrandIcon } from '../branding/Branding';
 
 // Quick action suggestions
 const QUICK_ACTIONS = [
@@ -113,10 +114,10 @@ function ChatBot({ onAction }) {
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 260, damping: 20 }}
       >
-        <svg className="w-10 h-10" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <rect width="100" height="100" rx="20" fill="#4f46e5"/>
-          <text x="50" y="72" fontSize="60" textAnchor="middle" fill="white" fontFamily="sans-serif" fontWeight="bold">SS</text>
-        </svg>
+        <BrandIcon
+          className="w-10 h-10 rounded-lg object-cover"
+          fallbackClassName="w-10 h-10 rounded-lg bg-indigo-600 text-white text-xl font-bold flex items-center justify-center"
+        />
 
         {/* Unread indicator */}
         {hasUnread && (
@@ -174,7 +175,10 @@ function ChatBot({ onAction }) {
                   className="w-8 h-8 rounded-lg flex items-center justify-center bg-white relative overflow-hidden"
                   style={{ boxShadow: '0 0 12px 2px rgba(141, 183, 79, 0.4)' }}
                 >
-                  <Zap className="w-4 h-4 text-daikin-blue" />
+                  <BrandIcon
+                    className="w-full h-full object-cover"
+                    fallbackClassName="w-full h-full bg-indigo-600 text-white text-xs font-bold flex items-center justify-center"
+                  />
                 </div>
                 <div>
                   <h3 className="font-semibold text-sm text-daikin-dark">Forecast Assistant</h3>

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import { TutorialProvider } from './contexts/TutorialContext';
@@ -12,6 +13,7 @@ import PromotionGuide from './pages/PromotionGuide';
 import RegulationGuide from './pages/RegulationGuide';
 import IntelligenceGuide from './pages/IntelligenceGuide';
 import { Spinner } from './components/common';
+import { useBranding } from './contexts/BrandingContext';
 
 function ProtectedRoute({ children, adminOnly = false, betaOnly = false }) {
   const { isAuthenticated, isAdmin, isBeta, isLoading } = useAuth();
@@ -41,6 +43,11 @@ function ProtectedRoute({ children, adminOnly = false, betaOnly = false }) {
 
 function App() {
   const { isAuthenticated, isBeta, isLoading } = useAuth();
+  const branding = useBranding();
+
+  useEffect(() => {
+    document.title = branding.showLogo ? branding.brandedName : branding.whiteLabelName;
+  }, [branding]);
 
   if (isLoading) {
     return (

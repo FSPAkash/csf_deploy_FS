@@ -1,6 +1,7 @@
-import { LogOut, Settings, GraduationCap, FlaskConical, Zap } from 'lucide-react';
+import { LogOut, Settings, GraduationCap } from 'lucide-react';
 
 import { Button, Badge } from '../common';
+import { BrandHeaderLockup } from '../branding/Branding';
 
 function Header({ user, isAdmin, isBeta, onLogout, onDevMode, onBetaDashboard, onBeta2Dashboard, onStartTutorial }) {
   return (
@@ -8,7 +9,7 @@ function Header({ user, isAdmin, isBeta, onLogout, onDevMode, onBetaDashboard, o
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-3" data-tutorial="header">
-            <span className="text-sm font-extrabold text-daikin-dark tracking-tight">SCENARIO SIMULATOR</span>
+            <BrandHeaderLockup />
           </div>
 
           {/* User Info and Actions */}
